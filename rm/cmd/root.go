@@ -1,34 +1,61 @@
-/*
-Copyright © 2023 AshutoshPatole<apatole479@gmail.com>
-
-*/
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
+	"github.com/TwiN/go-color"
 	"github.com/spf13/cobra"
 )
 
-
-
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "rm",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "Remove files and directories",
+	Long:  `Remove files and directories`,
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) <= 0 {
+			fmt.Println(color.InRed("requires atleast one parameter"))
+			os.Exit(1)
+		}
+		for _, arg := range args {
+			path, err := filepath.Abs(arg)
+			if err != nil {
+				fmt.Println(color.InRed(err))
+				continue
+			}
+			if err := remove(path); err != nil {
+				fmt.Println(color.InRed(err))
+			} else {
+				fmt.Println(color.InGreen(path + " removed"))
+			}
+
+		}
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+func remove(path string) error {
+	fi, err := os.Stat(path)
+	if err != nil {
+		return err
+	}
+
+	if fi.IsDir() {
+		return removeDirectory(path)
+	}
+
+	return removeSingleFile(path)
+}
+
+func removeSingleFile(path string) error {
+	return os.Remove(path)
+}
+
+func removeDirectory(path string) error {
+	return os.RemoveAll(path)
+}
+
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
@@ -37,15 +64,5 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.rm.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
