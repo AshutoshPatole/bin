@@ -19,13 +19,14 @@ var rootCmd = &cobra.Command{
 			fmt.Println(color.InRed("requires atleast one parameter"))
 			os.Exit(1)
 		}
+		recursive, _ := cmd.Flags().GetBool("recursive")
 		for _, arg := range args {
 			path, err := filepath.Abs(arg)
 			if err != nil {
 				fmt.Println(color.InRed(err))
 				continue
 			}
-			if err := remove(path); err != nil {
+			if err := remove(path, recursive); err != nil {
 				fmt.Println(color.InRed(err))
 			} else {
 				fmt.Println(color.InGreen(path + " removed"))
@@ -35,14 +36,19 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-func remove(path string) error {
+func remove(path string, recursive bool) error {
 	fi, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
 
 	if fi.IsDir() {
-		return removeDirectory(path)
+		if recursive {
+			// Only remove directories if recursive flag is set
+			return removeDirectory(path)
+		} else {
+			return fmt.Errorf("%s is a directory (use -r to remove directories recursively)", path)
+		}
 	}
 
 	return removeSingleFile(path)
@@ -64,5 +70,7 @@ func Execute() {
 }
 
 func init() {
+
+	rootCmd.Flags().BoolP("recursive", "r", false, "Remove files recursively")
 
 }
