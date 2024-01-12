@@ -42,7 +42,7 @@ func deleteServer(serverName string) {
 			for i, server := range env.Servers {
 				if server.HostName == serverName {
 					found = 1
-					fmt.Println(color.InYellow(server.HostName + " found in " + env.Name + " in " + grp.Name))
+					fmt.Println(color.InBlackOverRed(server.HostName + " found in " + env.Name + " in " + grp.Name))
 					reader := bufio.NewReader(os.Stdin)
 					fmt.Print("Are you sure you want to delete this server? (y/n): ")
 					response, err := reader.ReadString('\n')

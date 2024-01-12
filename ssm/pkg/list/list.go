@@ -65,7 +65,7 @@ func ListServers(group string) {
 		log.Fatalln(err)
 	}
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Environment", "Server", "IP", "Key status"})
+	table.SetHeader([]string{"Environment", "Server", "IP", "Alias", "Key status"})
 	table.SetRowLine(true)
 	table.SetAlignment(tablewriter.ALIGN_CENTER)
 	table.SetAutoMergeCellsByColumnIndex([]int{0})
@@ -92,7 +92,7 @@ func ListServers(group string) {
 					} else {
 						status = red + cross + reset
 					}
-					table.Append([]string{env.Name, server.HostName, server.IP, status})
+					table.Append([]string{env.Name, server.HostName, server.IP, server.Alias, status})
 				}
 
 			}
