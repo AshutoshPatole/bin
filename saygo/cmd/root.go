@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"time"
 
+	"github.com/TwiN/go-color"
+	"github.com/common-nighthawk/go-figure"
+	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/mem"
 	"github.com/spf13/cobra"
-	"github.com/zcalusic/sysinfo"
 )
 
 var platform, architecture string
@@ -17,20 +21,21 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		platform = runtime.GOOS
 		architecture = runtime.GOARCH
-		fmt.Println(platform)
-		fmt.Println(architecture)
 
-		var si sysinfo.BIOS
+		myFigure := figure.NewColorFigure("SayGo", "", "green", true)
+		myFigure.Print()
 
-		// si.GetSysInfo()
-		fmt.Println(si.Vendor)
+		totalCPU, _ := cpu.Counts(true)
+		cpuUtilised, _ := cpu.Percent(time.Millisecond*100, false)
 
-		// data, err := json.Marshal(&si)
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
+		memory, _ := mem.VirtualMemory()
 
-		// fmt.Println(string(data))
+		fmt.Printf("%-20s %s\n", "Operating System:", color.InBlue(platform))
+		fmt.Printf("%-20s %s\n", "OS Architecture:", color.InBlue(architecture))
+		fmt.Printf("%-20s %s\n", "CPU(s):", color.InBlue(totalCPU))
+		fmt.Printf("%-20s %s\n", "CPU %:", color.InBlue(cpuUtilised[0]))
+		fmt.Printf("%-20s %s\n", "Total Memory (GB):", color.InBlue(memory.Total/(1024*1024*1024)))
+		fmt.Printf("%-20s %s\n", "Memory Used %:", color.InBlue(memory.UsedPercent))
 
 	},
 }
