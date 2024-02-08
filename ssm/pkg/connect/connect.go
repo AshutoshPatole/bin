@@ -61,6 +61,7 @@ type ServerOption struct {
 	Label       string
 	Environment string
 	HostName    string
+	IP          string
 }
 
 func ListToConnectServers(group, environment string) {
@@ -72,6 +73,7 @@ func ListToConnectServers(group, environment string) {
 
 	selectedEnvName := ""
 	selectedHostName := ""
+	selectedHostIP := ""
 
 	serverOptions := []ServerOption{}
 	user := ""
@@ -87,6 +89,7 @@ func ListToConnectServers(group, environment string) {
 								Label:       fmt.Sprintf("%s (%s)", server.Alias, env.Name),
 								Environment: env.Name,
 								HostName:    server.HostName,
+								IP:          server.IP,
 							}
 							serverOptions = append(serverOptions, serverOption)
 						}
@@ -97,6 +100,7 @@ func ListToConnectServers(group, environment string) {
 							Label:       fmt.Sprintf("%s (%s)", server.Alias, env.Name),
 							Environment: env.Name,
 							HostName:    server.HostName,
+							IP:          server.IP,
 						}
 						serverOptions = append(serverOptions, serverOption)
 					}
@@ -121,15 +125,17 @@ func ListToConnectServers(group, environment string) {
 		if serverOption.Label == selectedHostName {
 			selectedEnvName = serverOption.Environment
 			selectedHostName = strings.Split(serverOption.HostName, " (")[0]
+			selectedHostIP = serverOption.IP
 			break
 		}
 	}
 	if selectedHostName != "" && user != "" && selectedEnvName != "" {
 		fmt.Println(color.InGreen("Host : " + selectedHostName))
+		fmt.Println(color.InGreen("IP Address : " + selectedHostIP))
 		fmt.Println(color.InGreen("User : " + user))
 		fmt.Println(color.InGreen("Environment : " + selectedEnvName))
 
-		ssh.Connect(selectedHostName, user, selectedEnvName)
+		ssh.Connect(selectedHostIP, user, selectedEnvName)
 	} else {
 		fmt.Println(color.InRed("Aborted!!"))
 	}
