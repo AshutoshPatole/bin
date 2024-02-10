@@ -130,10 +130,12 @@ func ListToConnectServers(group, environment string) {
 		}
 	}
 	if selectedHostName != "" && user != "" && selectedEnvName != "" {
-		fmt.Println(color.InGreen("Host : " + selectedHostName))
-		fmt.Println(color.InGreen("IP Address : " + selectedHostIP))
-		fmt.Println(color.InGreen("User : " + user))
-		fmt.Println(color.InGreen("Environment : " + selectedEnvName))
+		longestLabelLength := 12
+		colonWidth := 2
+		fmt.Println(color.InGreen(fmt.Sprintf("%-*s: %*s", longestLabelLength, "Host", colonWidth, selectedHostName)))
+		fmt.Println(color.InGreen(fmt.Sprintf("%-*s: %*s", longestLabelLength, "IP Address", colonWidth, selectedHostIP)))
+		fmt.Println(color.InGreen(fmt.Sprintf("%-*s: %*s", longestLabelLength, "User", colonWidth, user)))
+		fmt.Println(color.InGreen(fmt.Sprintf("%-*s: %*s", longestLabelLength, "Environment", colonWidth, selectedEnvName)))
 
 		ssh.Connect(selectedHostIP, user, selectedEnvName)
 	} else {
