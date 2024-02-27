@@ -1,6 +1,7 @@
 package utils
 
 type Server struct {
+	User     string `mapstructure:"user"`
 	HostName string `mapstructure:"hostname"`
 	IP       string `mapstructure:"ip"`
 	KeyAuth  bool   `mapstructure:"keyAuth"`

@@ -61,6 +61,7 @@ type ServerOption struct {
 	Label       string
 	Environment string
 	HostName    string
+	User        string
 	IP          string
 }
 
@@ -90,6 +91,7 @@ func ListToConnectServers(group, environment string) {
 								Environment: env.Name,
 								HostName:    server.HostName,
 								IP:          server.IP,
+								User:        user,
 							}
 							serverOptions = append(serverOptions, serverOption)
 						}
@@ -139,6 +141,6 @@ func ListToConnectServers(group, environment string) {
 
 		ssh.Connect(selectedHostIP, user, selectedEnvName)
 	} else {
-		fmt.Println(color.InRed("Aborted!!"))
+		fmt.Println(color.InRed("Aborted! Bad Request"))
 	}
 }

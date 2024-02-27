@@ -44,6 +44,7 @@ func SaveServer(hostname, user, group, env, alias string, keyAuth bool) {
 		HostName: hostname,
 		IP:       ip,
 		KeyAuth:  keyAuth,
+		User:     user,
 		Alias:    alias,
 	}
 
