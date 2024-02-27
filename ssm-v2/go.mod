@@ -3,13 +3,14 @@ module github.com/AshutoshPatole/bin/ssm-v2
 go 1.21.6
 
 require (
+	github.com/TwiN/go-color v1.4.1
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
+	golang.org/x/crypto v0.16.0
 	golang.org/x/term v0.17.0
 )
 
 require (
-	github.com/TwiN/go-color v1.4.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
