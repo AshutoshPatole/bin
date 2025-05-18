@@ -7,7 +7,10 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"sync"
 )
+
+var wg sync.WaitGroup
 
 func main() {
 	if len(os.Args) < 2 {
@@ -29,23 +32,28 @@ func findBinary(bin string) {
 
 	pathVariables := os.Getenv("PATH")
 	paths := strings.Split(pathVariables, ";")
+	wg.Add(len(paths))
 
 	for _, path := range paths {
 		// fmt.Println(path)
-		filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
-			if err != nil || info == nil {
-				return err
-			}
-			if info.IsDir() {
-				return nil
-			}
+		go func() {
+			defer wg.Done()
+			filepath.Walk(path, func(path string, info fs.FileInfo, err error) error {
+				if err != nil || info == nil {
+					return err
+				}
+				if info.IsDir() {
+					return nil
+				}
 
-			base := info.Name()
-			if base == bin || base == bin+".exe" || base == bin+".bat" || base == bin+".cmd" {
-				fmt.Println(path)
-			}
-			return nil
-		})
+				base := info.Name()
+				if base == bin || base == bin+".exe" || base == bin+".bat" || base == bin+".cmd" {
+					fmt.Println(path)
+				}
+				return nil
+			})
+		}()
 	}
 
+	wg.Wait()
 }
